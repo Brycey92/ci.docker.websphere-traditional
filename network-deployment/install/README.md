@@ -1,25 +1,6 @@
 # Building an IBM WebSphere Application Server Network Deployment traditional image from binaries
 
-An IBM WebSphere Application Server Network Deployment traditional image can be built by obtaining the following binaries:
-* IBM Installation Manager binaries from [Passport Advantage](http://www-01.ibm.com/software/passportadvantage/pao_customer.html)
-
-  IBM Installation Manager binaries:
-  * Install_Mgr_v1.6.2_Lnx_WASv8.5.5.zip (CIK2GML)
-
-* IBM WebSphere Application Server Network Deployment traditional binaries from [Passport Advantage](http://www-01.ibm.com/software/passportadvantage/pao_customer.html) / [Fix Central](http://www-933.ibm.com/support/fixcentral/)
-
-  IBM WebSphere Application Server Network Deployment traditional V8.5.5 binaries:
-  * WASND_v8.5.5_1of3.zip (CIK2HML)
-  * WASND_v8.5.5_2of3.zip (CIK2IML)
-  * WASND_v8.5.5_3of3.zip (CIK2JML)
-
-  Fixpack V8.5.5.9 binaries:
-  * 8.5.5-WS-WAS-FP0000009-part1.zip
-  * 8.5.5-WS-WAS-FP0000009-part2.zip
-
-  IBM WebSphere SDK Java Technology Edition V7.1.3.0 binaries:
-  * 7.1.3.30-WS-IBMWASJAVA-part1.zip
-  * 7.1.3.30-WS-IBMWASJAVA-part2.zip
+An IBM WebSphere Application Server Network Deployment traditional image can be built by installing Installation Manager and finding the correct repos.
 
 An IBM WebSphere Application Server Network Deployment traditional install image is created in two steps by using the following two Dockerfiles to reduce the final image size:
 
@@ -34,9 +15,9 @@ Dockerfile.prereq takes the following actions:
 4. When the container is started a .tar file for the IBM WebSphere Application Server Network Deployment traditional  installation is created
 
 Dockerfile.prereq takes the values for the following variables at build time: 
-* user (optional, default is 'was') - user used for the installation
-* group (optional, default is 'was') - group the user belongs to
-* URL (required) - URL from where the binaries are downloaded
+* user (optional, default is 'root') - user used for the installation
+* group (optional, default is 'root') - group the user belongs to
+* URL (not used) - URL from where the binaries are downloaded
 
 Dockerfile.install takes the following action:
 
@@ -56,12 +37,12 @@ Dockerfile.install takes the following action:
 5. Run a container by using the prereq image to create the .tar file in the current folder by using:
 
     ```bash
-    docker run --rm -v $(pwd):/tmp <prereq-image-name>
+    docker run --rm -v $(pwd):/tmp -v /opt:/opt <prereq-image-name>
     ```
 
 6. Build the install image by using:
 
     ```bash
-    docker build --build-arg user=<user> --build-arg group=<group> -t <install-image-name> -f Dockerfile.install .
+    docker build --build-arg user=<user> --build-arg group=<group> -t nd -f Dockerfile.install .
     ```
 
